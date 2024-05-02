@@ -1,0 +1,60 @@
+# ConfigMap 
+configMap:
+  name: grafana-datasources 
+  namespace: monitoring
+  url: http://prometheus-service:9090
+
+# PersistentVolumeClaim
+persistence:
+  name: grafana-pvc
+  namespace: monitoring
+  enabled: true
+  accessModes: ReadWriteOnce
+  storage: 1Gi
+
+# Deployment
+deployment:
+  app: grafana
+  name: grafana
+  namespace: monitoring
+  replicaCount: 1
+  serviceAccountName: grafana-new-sa
+  container:
+    name: grafana
+    image: grafana/grafana:10.3.1
+    containerPort: 3000
+awsSecrets:
+  k8sSecretName: grafana-credentials
+resources:
+  cpu: "500m"
+  memory: "1Gi"
+requests:
+  cpu: "250m"
+  memory: "500Mi"
+volumeMounts:
+  name: grafana-volume  
+volumes:
+  name: grafana-volume  
+claimName: grafana-pvc       
+
+service:
+  name: grafana
+  namespace: monitoring
+  port: 3000
+  targetPort: 3000
+  selector:
+    app: grafana
+  type: ClusterIP
+
+
+ingress:
+  name: grafana-dev-ingress
+  namespace: monitoring
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/whitelist-source-range: "73.211.20.186/32"
+  host: "grafana-nazgul.click"
+  path: "/"
+  pathType: Prefix
+  serviceName: grafana
+  servicePort: 3000

@@ -1,0 +1,71 @@
+# Namespace where Prometheus resources will be deployed
+Namespace:
+  name: monitoring
+
+# ConfigMap values
+configMap:
+  name: prometheus-server
+  namespace: monitoring
+  prometheusYml: |
+    global:
+      scrape_interval: 5s
+      evaluation_interval: 5s
+    scrape_configs:
+      # Your scrape configurations here
+
+# ServiceAccount values
+serviceAccount:
+  name: prometheus-serviceaccount
+  app: prometheus
+  namespace: monitoring
+
+# RBAC values
+clusterRole:
+  name: prometheus
+clusterRoleBinding:
+  name: prometheus
+  namespace: monitoring
+  
+
+# PersistentVolumeClaim values
+persistentVolumeClaim:
+  name: prometheus-server-pvc
+  namespace: monitoring
+  accessModes: 
+    - ReadWriteOnce
+  storage: 1Gi
+
+# Deployment values
+deployment:
+  name: deployment-prometheus
+  namespace: monitoring
+  app: prometheus-server
+  replicaCount: 1
+  serviceAccountName: prometheus-serviceaccount
+  container:
+    name: prometheus
+    image: prom/prometheus:v2.20.1
+    args: "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - containerPort: 9090
+    volumeMounts:
+      - name: prometheus-config-volume
+        mountPath: /etc/prometheus/
+      - name: prometheus-data-volume
+        mountPath: /data
+  volumes:
+    - name: prometheus-config-volume
+      configMap:
+        name: prometheus-server  
+    - name: prometheus-data-volume
+      persistentVolumeClaim:
+        claimName: prometheus-server-pvc
+# Service values
+service:
+  name: prometheus-service
+  namespace: monitoring
+  app: prometheus-server
+  ports:
+    - name: prometheus
+      port: 9090
+      targetPort: 9090

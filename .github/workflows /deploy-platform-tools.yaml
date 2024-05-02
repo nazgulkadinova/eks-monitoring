@@ -1,0 +1,145 @@
+# This worflow is primarily for platform/devops tools that need to be deployed into K8s cluster
+# or tools that don't belong to Terraform
+name: "Workflow - Deploy Platform Tools"
+
+on:
+  push:
+    branches:
+      - feature/**
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: "us-east-1"
+  ENVIRONMENT_STAGE: "dev"
+ 
+  
+  
+
+jobs:
+  deploy-platform-tools:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.IAM_ROLE }}
+          role-session-name: GitHubActionsCICDrole
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Login to EKS, make sure to switch to the permanent cluster created with terraform once it's up
+      - name: Login to EKS - update kubeconfig
+        run: aws eks update-kubeconfig --name project-x-eks-main --region $AWS_REGION
+
+      # # Add deployment steps for each tool below
+      # - name: Deploy ingress-nginx controller
+      #   run: kubectl apply -f ingress-nginx/deploy.yaml
+
+
+
+      # # Example for set up monitoring for Kubernetes cluster
+      # - name: Install Prometheus template
+      #   run: |
+      #       helm upgrade --install prometheus-release-dev ./eks-monitoring/helm-chart/prometheus/ \
+      #        --values ./eks-monitoring/helm-chart/prometheus/values-${ENVIRONMENT_STAGE} 
+
+      # # Create policy for Grafana
+      # - name: Check and Create IAM Policy
+      #   run: |
+      #     POLICY_NAME="grafana-access-policy"
+      #     POLICY_ARN=$(aws iam list-policies --query "Policies[?PolicyName=='$POLICY_NAME'].Arn" --output text)
+
+      #     if [ -z "$POLICY_ARN" ]; then
+      #         echo "Policy does not exist, creating..."
+      #         POLICY_DOCUMENT='{
+      #             "Version": "2012-10-17",
+      #             "Statement": [ {
+      #                 "Effect": "Allow",
+      #                 "Action": ["secretsmanager:GetSecretValue", "secretsmanager:DescribeSecret"],
+      #                 "Resource": ["arn:aws:secretsmanager:us-east-1:036692858685:secret:dev/grafana/grafana-credentials-UAKfO7"]
+      #             } ]
+      #         }'
+      #         POLICY_ARN=$(aws iam create-policy --policy-name "$POLICY_NAME" --policy-document "$POLICY_DOCUMENT" --query "Policy.Arn" --output text)
+      #         echo "Created policy ARN: $POLICY_ARN"
+      #     else
+      #         echo "Policy already exists with ARN: $POLICY_ARN"
+      #     fi
+      #     echo "POLICY_ARN=$POLICY_ARN" >> $GITHUB_ENV
+
+      # # Install eksctl
+      # - name: Install eksctl
+      #   run: |
+      #     curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+      #     sudo mv /tmp/eksctl /usr/local/bin
+
+
+      # # Create role and serviceAccount for Grafana
+      # - name: Create role and sa for Grafana
+      #   run: |
+      #     eksctl create iamserviceaccount --name grafana-new-sa \
+      #     --region=us-east-1 --cluster project-x-eks-main \
+      #     --namespace monitoring --approve \
+      #     --attach-policy-arn "$POLICY_ARN" \
+      #     --override-existing-serviceaccounts
+
+
+      # # Install grafana
+      # - name: Install grafana
+      #   run: |
+      #       helm upgrade --install grafana-release-dev ./eks-monitoring/helm-chart/grafana/ \
+      #        --values ./eks-monitoring/helm-chart/grafana/values/grafana-val-dev.yaml -n monitoring
+
+
+             
+       
+
+ 
+         
+      
+  
+      # # Repeat for each additional tool...
+      # # Example: Deploy External DNS
+      
+    
+      # # Example: Setup K8s User Roles
+      # - name: Setup K8s User Roles
+      #   run: |
+      #       echo "Deploy K8s user-roles go here"
+      # # Apply ServiceAccount, ClusterRole and ClusterRoleBindings   
+      # - name:  Apply ServiceAccount
+      #   run: | 
+      #       kubectl apply -f ./k8s-user-roles/service-account.yaml
+      # - name: Apply ClusterRole
+      #   run: |
+      #       kubectl apply -f ./k8s-user-roles/cluster-role.yaml
+      # - name: Apply ClusterRoleBinding
+      #   run: |
+      #       kubectl apply -f ./k8s-user-roles/cluster-role-binding.yaml
+    
+     
+      # - name: Finalize Deployment
+      #   run: |
+      #     echo "Final deployment steps and cleanup"
+
+
+             
+       
+
+ 
+         
+    
+      
+
+    
+     
+    

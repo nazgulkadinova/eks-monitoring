@@ -1,0 +1,5 @@
+apiVersion: v2
+name: Prometheus Helm Chart
+description: chart for deploying Prometheus
+type: application
+version: 0.1.0

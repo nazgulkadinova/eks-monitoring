@@ -1,0 +1,164 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.name }} 
+  namespace: {{ .Values.configMap.namespace }} 
+  labels:
+    grafana_datasources: '1'
+data:
+  prometheus.yml: |
+    apiVersion: 1
+    datasources:
+      - access: proxy
+        editable: true
+        name: prometheus
+        orgId: 1
+        url: {{ .Values.configMap.url }}
+        version: 1
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.persistence.name }}
+  namespace: {{ .Values.persistence.namespace }}
+spec:
+  accessModes: 
+    - {{ .Values.persistence.accessModes }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storage }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.deployment.app }}
+  name: {{ .Values.deployment.name }}
+  namespace: {{ .Values.deployment.namespace }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.app }}
+  template:
+    metadata:
+      name: {{ .Values.deployment.name }}
+      labels:
+        app: {{ .Values.deployment.app }}
+      annotations: 
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "3000"     
+    spec:
+      serviceAccountName: {{ .Values.deployment.serviceAccountName }}
+      securityContext:
+        fsGroup: 472
+        supplementalGroups:
+          - 0
+      containers:
+        - name: {{ .Values.deployment.container.name }}
+          image: {{ .Values.deployment.container.image }}
+          ports:
+            - containerPort: {{ .Values.deployment.container.containerPort }}
+          env:
+            - name: GF_SECURITY_ADMIN_USER #env var name that Grafana recogn as a parametr for setting username
+              valueFrom: #the value for the environment variable will be fetched from a specified source
+                secretKeyRef: #value will come from a key within a Kubernetes Secret object.
+                  name: "grafana-credentials"
+                  key: username
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "grafana-credentials"
+                  key: password
+          resources:
+            limits:
+              memory: "{{ .Values.resources.memory }}"
+              cpu: "{{ .Values.resources.cpu }}"
+            requests:
+              memory: "{{ .Values.requests.memory }}"
+              cpu: "{{ .Values.resources.cpu }}"
+          volumeMounts: 
+            - mountPath: /var/lib/grafana
+              name: grafana-volume
+            - name: secret-store
+              mountPath: "/mnt/secrets"
+              readOnly: true           
+      volumes:
+        - name: grafana-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.claimName }}        
+        - name: secret-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "grafana-aws-secrets"
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name }}
+  namespace: {{ .Values.service.namespace }}
+spec:
+  ports:
+    - port: {{ .Values.service.port }}
+      protocol: TCP
+      targetPort: {{ .Values.service.targetPort }}
+  selector:
+    app: {{ .Values.service.selector.app }}
+  sessionAffinity: None
+  type: {{ .Values.service.type }}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.ingress.name }}
+  namespace: {{ .Values.ingress.namespace}}
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+  - host: {{ .Values.ingress.host | quote }}
+    http:
+      paths:
+      - path: {{ .Values.ingress.path | quote }}
+        pathType: {{ .Values.ingress.pathType }}
+        backend:
+          service:
+            name: {{ .Values.ingress.serviceName }}
+            port:
+              number: {{ .Values.ingress.servicePort }}
+
+---
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: grafana-aws-secrets
+  namespace: monitoring
+spec:
+  provider: aws
+  secretObjects:
+  - secretName: grafana-credentials
+    type: Opaque
+    data:
+    - objectName: "username"
+      key: "username"
+    - objectName: "password"
+      key: "password"
+  parameters:
+    objects: |
+      - objectName: "dev/grafana/grafana-credentials"
+        objectType: "secretsmanager"
+        jmesPath:
+          - path: "username"  
+            objectAlias: "username" 
+          - path: "password"  
+            objectAlias: "password"
+
