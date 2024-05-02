@@ -1,6 +1,4 @@
-# This worflow is primarily for platform/devops tools that need to be deployed into K8s cluster
-# or tools that don't belong to Terraform
-name: "Workflow - Deploy Platform Tools"
+name: "Workflow - Deploy Monitoring Tools"
 
 on:
   push:
