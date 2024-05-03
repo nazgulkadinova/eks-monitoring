@@ -44,6 +44,7 @@ jobs:
 
 
       # Example for set up monitoring for Kubernetes cluster
+      
       - name: Install Prometheus template
         run: |
           helm upgrade --install prometheus-release-dev ./helm-chart/prometheus \
@@ -93,7 +94,7 @@ jobs:
           
 
 
-      # Install grafana
+      # Install grafana 
       - name: Install grafana
         run: |
         
