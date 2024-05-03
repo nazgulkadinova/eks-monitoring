@@ -85,7 +85,7 @@ jobs:
       # Create role and serviceAccount for Grafana
       - name: Create role and sa for Grafana
         run: |
-          eksctl create iamserviceaccount --name grafana-new-sa \
+          eksctl create iamserviceaccount --name grafana-new-sa-2 \
           --region=us-east-1 --cluster project-x-eks-main \
           --namespace monitoring --approve \
           --attach-policy-arn "$POLICY_ARN" \
