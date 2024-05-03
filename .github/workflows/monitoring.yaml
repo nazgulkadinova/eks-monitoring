@@ -64,7 +64,7 @@ jobs:
                   "Statement": [ {
                       "Effect": "Allow",
                       "Action": ["secretsmanager:GetSecretValue", "secretsmanager:DescribeSecret"],
-                      "Resource": ["arn:aws:secretsmanager:us-east-1:036692858685:secret:dev/grafana/grafana-credentials-UAKfO7"]
+                      "Resource": ["arn:aws:secretsmanager:us-east-1:881493551084:secret:dev/grafana/grafana-credentials-WucjDs"]
                   } ]
               }'
               POLICY_ARN=$(aws iam create-policy --policy-name "$POLICY_NAME" --policy-document "$POLICY_DOCUMENT" --query "Policy.Arn" --output text)
