@@ -45,17 +45,17 @@ jobs:
 
 
 
-      # # Example for set up monitoring for Kubernetes cluster
-      # - name: Install Prometheus template
-      #   run: |
-      #       helm upgrade --install prometheus-release-dev ./eks-monitoring/helm-chart/prometheus/ \
-      #        --values ./eks-monitoring/helm-chart/prometheus/values-${ENVIRONMENT_STAGE} 
+      # Example for set up monitoring for Kubernetes cluster
+      - name: Install Prometheus template
+        run: |
+            helm upgrade --install prometheus-release-dev ./eks-monitoring/helm-chart/prometheus/ \
+             --values ./eks-monitoring/helm-chart/prometheus/values-${ENVIRONMENT_STAGE} 
 
-      # # Create policy for Grafana
-      # - name: Check and Create IAM Policy
-      #   run: |
-      #     POLICY_NAME="grafana-access-policy"
-      #     POLICY_ARN=$(aws iam list-policies --query "Policies[?PolicyName=='$POLICY_NAME'].Arn" --output text)
+      # Create policy for Grafana
+      - name: Check and Create IAM Policy
+        run: |
+          POLICY_NAME="grafana-access-policy"
+          POLICY_ARN=$(aws iam list-policies --query "Policies[?PolicyName=='$POLICY_NAME'].Arn" --output text)
 
       #     if [ -z "$POLICY_ARN" ]; then
       #         echo "Policy does not exist, creating..."
