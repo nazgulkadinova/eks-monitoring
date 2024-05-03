@@ -64,7 +64,7 @@ jobs:
                   "Statement": [ {
                       "Effect": "Allow",
                       "Action": ["secretsmanager:GetSecretValue", "secretsmanager:DescribeSecret"],
-                      "Resource": ["arn:aws:secretsmanager:us-east-1:881493551084:secret:dev/grafana/grafana-credentials-WucjDs"]
+                      "Resource": ["arn:aws:secretsmanager:us-east-1:881493551084:secret:dev/grafana/grafana-credentials-LNzAne"]
                   } ]
               }'
               POLICY_ARN=$(aws iam create-policy --policy-name "$POLICY_NAME" --policy-document "$POLICY_DOCUMENT" --query "Policy.Arn" --output text)
@@ -90,6 +90,8 @@ jobs:
           --attach-policy-arn "$POLICY_ARN" \
           --override-existing-serviceaccounts
 
+          
+
 
       # Install grafana
       - name: Install grafana
@@ -97,6 +99,8 @@ jobs:
             helm upgrade --install grafana-release-dev ./eks-monitoring/helm-chart/grafana/ \
              --values ./eks-monitoring/helm-chart/grafana/values/grafana-val-dev.yaml -n monitoring
 
+             helm upgrade --install grafana-release-dev ./helm-chart/grafana \
+             --values ./helm-chart/grafana/values/grafana-val-dev.yaml
 
              
        
