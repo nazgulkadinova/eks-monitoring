@@ -31,8 +31,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.IAM_ROLE }}
-          role-session-name: GitHubActionsRoleSession
+          role-to-assume: ${{ secrets.GitHubActionsCICDrole }}
+          role-session-name: GitHubActionsCICDrole
           aws-region: ${{ env.AWS_REGION }}
 
       # Login to EKS, make sure to switch to the permanent cluster created with terraform once it's up
