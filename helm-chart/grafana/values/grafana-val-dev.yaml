@@ -53,7 +53,7 @@ ingress:
   className: nginx
   annotations:
     nginx.ingress.kubernetes.io/whitelist-source-range: "73.211.20.186/32"
-  host: "grafana-nazgul.click"
+  host: "grafana.nazgul.click"
   path: "/"
   pathType: Prefix
   serviceName: grafana

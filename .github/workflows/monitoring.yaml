@@ -49,8 +49,7 @@ jobs:
           helm upgrade --install prometheus-release-dev ./helm-chart/prometheus \
           --values ./helm-chart/prometheus/values/prometheus-val-dev.yaml 
 
-            #  helm upgrade --install aak-app ./helm-chart \ --values ./helm-chart/values/backend.yaml \
-            #  --namespace aak-app \ --set image.tag="$IMAGE_TAG"
+        
 
       # Create policy for Grafana
       - name: Check and Create IAM Policy
@@ -58,22 +57,22 @@ jobs:
           POLICY_NAME="grafana-access-policy"
           POLICY_ARN=$(aws iam list-policies --query "Policies[?PolicyName=='$POLICY_NAME'].Arn" --output text)
 
-      #     if [ -z "$POLICY_ARN" ]; then
-      #         echo "Policy does not exist, creating..."
-      #         POLICY_DOCUMENT='{
-      #             "Version": "2012-10-17",
-      #             "Statement": [ {
-      #                 "Effect": "Allow",
-      #                 "Action": ["secretsmanager:GetSecretValue", "secretsmanager:DescribeSecret"],
-      #                 "Resource": ["arn:aws:secretsmanager:us-east-1:036692858685:secret:dev/grafana/grafana-credentials-UAKfO7"]
-      #             } ]
-      #         }'
-      #         POLICY_ARN=$(aws iam create-policy --policy-name "$POLICY_NAME" --policy-document "$POLICY_DOCUMENT" --query "Policy.Arn" --output text)
-      #         echo "Created policy ARN: $POLICY_ARN"
-      #     else
-      #         echo "Policy already exists with ARN: $POLICY_ARN"
-      #     fi
-      #     echo "POLICY_ARN=$POLICY_ARN" >> $GITHUB_ENV
+          if [ -z "$POLICY_ARN" ]; then
+              echo "Policy does not exist, creating..."
+              POLICY_DOCUMENT='{
+                  "Version": "2012-10-17",
+                  "Statement": [ {
+                      "Effect": "Allow",
+                      "Action": ["secretsmanager:GetSecretValue", "secretsmanager:DescribeSecret"],
+                      "Resource": ["arn:aws:secretsmanager:us-east-1:036692858685:secret:dev/grafana/grafana-credentials-UAKfO7"]
+                  } ]
+              }'
+              POLICY_ARN=$(aws iam create-policy --policy-name "$POLICY_NAME" --policy-document "$POLICY_DOCUMENT" --query "Policy.Arn" --output text)
+              echo "Created policy ARN: $POLICY_ARN"
+          else
+              echo "Policy already exists with ARN: $POLICY_ARN"
+          fi
+          echo "POLICY_ARN=$POLICY_ARN" >> $GITHUB_ENV
 
       # # Install eksctl
       # - name: Install eksctl
