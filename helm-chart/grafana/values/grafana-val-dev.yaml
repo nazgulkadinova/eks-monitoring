@@ -1,7 +1,3 @@
-# Namespace where Prometheus resources will be deployed
-Namespace:
-  name: monitoring
-  
 # ConfigMap 
 configMap:
   name: grafana-datasources 
