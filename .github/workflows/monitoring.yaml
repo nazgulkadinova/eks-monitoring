@@ -91,11 +91,11 @@ jobs:
           --override-existing-serviceaccounts
 
 
-      # # Install grafana
-      # - name: Install grafana
-      #   run: |
-      #       helm upgrade --install grafana-release-dev ./eks-monitoring/helm-chart/grafana/ \
-      #        --values ./eks-monitoring/helm-chart/grafana/values/grafana-val-dev.yaml -n monitoring
+      # Install grafana
+      - name: Install grafana
+        run: |
+            helm upgrade --install grafana-release-dev ./eks-monitoring/helm-chart/grafana/ \
+             --values ./eks-monitoring/helm-chart/grafana/values/grafana-val-dev.yaml -n monitoring
 
 
              
