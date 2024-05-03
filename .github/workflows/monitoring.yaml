@@ -49,7 +49,7 @@ jobs:
       - name: Install Prometheus template
         run: |
             helm upgrade --install prometheus-release-dev ./helm-chart/prometheus/ \
-             --values ./helm-chart/prometheus/values-${ENVIRONMENT_STAGE} 
+             --values ./helm-chart/prometheus/values-prometheus-val-dev.yaml     #${ENVIRONMENT_STAGE} 
 
       # Create policy for Grafana
       - name: Check and Create IAM Policy
