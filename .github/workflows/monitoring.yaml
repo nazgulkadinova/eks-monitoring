@@ -81,14 +81,14 @@ jobs:
           sudo mv /tmp/eksctl /usr/local/bin
 
 
-      # Create role and serviceAccount for Grafana
-      - name: Create role and sa for Grafana
-        run: |
-          eksctl create iamserviceaccount --name grafana-new-sa \
-          --region=us-east-1 --cluster project-x-eks-main \
-          --namespace monitoring --approve \
-          --attach-policy-arn "$POLICY_ARN" \
-          --override-existing-serviceaccounts
+      # # Create role and serviceAccount for Grafana
+      # - name: Create role and sa for Grafana
+      #   run: |
+      #     eksctl create iamserviceaccount --name grafana-new-sa \
+      #     --region=us-east-1 --cluster project-x-eks-main \
+      #     --namespace monitoring --approve \
+      #     --attach-policy-arn "$POLICY_ARN" \
+      #     --override-existing-serviceaccounts
 
           
 
@@ -96,9 +96,7 @@ jobs:
       # Install grafana
       - name: Install grafana
         run: |
-            helm upgrade --install grafana-release-dev ./eks-monitoring/helm-chart/grafana/ \
-             --values ./eks-monitoring/helm-chart/grafana/values/grafana-val-dev.yaml -n monitoring
-
+        
              helm upgrade --install grafana-release-dev ./helm-chart/grafana \
              --values ./helm-chart/grafana/values/grafana-val-dev.yaml
 
