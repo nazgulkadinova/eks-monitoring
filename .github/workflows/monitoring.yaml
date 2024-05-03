@@ -39,9 +39,9 @@ jobs:
       - name: Login to EKS - update kubeconfig
         run: aws eks update-kubeconfig --name project-x-eks-main --region $AWS_REGION
 
-      # # Add deployment steps for each tool below
-      # - name: Deploy ingress-nginx controller
-      #   run: kubectl apply -f ingress-nginx/deploy.yaml
+      # Add deployment steps for each tool below
+      - name: Deploy ingress-nginx controller
+        run: kubectl apply -f ingress-nginx/deploy.yaml
 
 
 
