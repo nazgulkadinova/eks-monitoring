@@ -56,7 +56,7 @@ ingress:
   namespace: monitoring
   className: nginx
   annotations:
-    nginx.ingress.kubernetes.io/whitelist-source-range: "73.211.20.186/32"
+    nginx.ingress.kubernetes.io/whitelist-source-range: "73.209.101.110"
   host: "grafana.nazgul.click"
   path: "/"
   pathType: Prefix
