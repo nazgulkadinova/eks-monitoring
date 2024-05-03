@@ -37,14 +37,14 @@ jobs:
       - name: Login to EKS - update kubeconfig
         run: aws eks update-kubeconfig --name project-x-eks-main --region $AWS_REGION
 
-      # Add deployment steps for each tool below
+      # Add deployment steps for each tool below.
       - name: Deploy ingress-nginx controller
         run: kubectl apply -f ingress-nginx/deploy.yaml
 
 
 
       # Example for set up monitoring for Kubernetes cluster
-      
+
       - name: Install Prometheus template
         run: |
           helm upgrade --install prometheus-release-dev ./helm-chart/prometheus \
