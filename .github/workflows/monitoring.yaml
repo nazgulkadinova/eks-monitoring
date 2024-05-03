@@ -101,7 +101,8 @@ jobs:
              helm upgrade --install grafana-release-dev ./helm-chart/grafana \
              --values ./helm-chart/grafana/values/grafana-val-dev.yaml
 
-             
+            #  helm upgrade --install prometheus-release-dev ./helm-chart/prometheus \
+            #  --values ./helm-chart/prometheus/values/prometheus-val-dev.yaml
        
 
  
