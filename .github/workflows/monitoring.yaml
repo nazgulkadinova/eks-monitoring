@@ -14,8 +14,6 @@ env:
   AWS_REGION: "us-east-1"
   ENVIRONMENT_STAGE: "dev"
  
-  
-  
 
 jobs:
   deploy-platform-tools:
@@ -48,8 +46,8 @@ jobs:
       # Example for set up monitoring for Kubernetes cluster
       - name: Install Prometheus template
         run: |
-            helm upgrade --install prometheus-release-dev ./eks-monitoring/helm-chart/prometheus/ \
-             --values ./eks-monitoring/helm-chart/prometheus/values-${ENVIRONMENT_STAGE} 
+            helm upgrade --install prometheus-release-dev ./helm-chart/prometheus/ \
+             --values ./helm-chart/prometheus/values-${ENVIRONMENT_STAGE} 
 
       # Create policy for Grafana
       - name: Check and Create IAM Policy
