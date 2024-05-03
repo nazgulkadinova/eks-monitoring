@@ -435,6 +435,8 @@ spec:
         - --validating-webhook=:8443
         - --validating-webhook-certificate=/usr/local/certificates/cert
         - --validating-webhook-key=/usr/local/certificates/key
+        - --enable-ssl-passthrough
+        # needs to be enabled for ArgoCD to function with SSL Passthrough
         env:
         - name: POD_NAME
           valueFrom:
@@ -651,4 +653,3 @@ webhooks:
     resources:
     - ingresses
   sideEffects: None
-  
