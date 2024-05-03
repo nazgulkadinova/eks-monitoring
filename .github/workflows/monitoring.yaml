@@ -46,8 +46,11 @@ jobs:
       # Example for set up monitoring for Kubernetes cluster
       - name: Install Prometheus template
         run: |
-            helm upgrade --install prometheus-release-dev ./helm-chart/prometheus/ \
-             --values ./helm-chart/prometheus/values-${ENVIRONMENT_STAGE} 
+            helm upgrade --install prometheus-release-dev ./helm-chart/ \
+             --values ./helm-chart/values-${ENVIRONMENT_STAGE} 
+
+            #  helm upgrade --install aak-app ./helm-chart \ --values ./helm-chart/values/backend.yaml \
+            #  --namespace aak-app \ --set image.tag="$IMAGE_TAG"
 
       # Create policy for Grafana
       - name: Check and Create IAM Policy
