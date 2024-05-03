@@ -82,14 +82,14 @@ jobs:
           sudo mv /tmp/eksctl /usr/local/bin
 
 
-      # # Create role and serviceAccount for Grafana
-      # - name: Create role and sa for Grafana
-      #   run: |
-      #     eksctl create iamserviceaccount --name grafana-new-sa \
-      #     --region=us-east-1 --cluster project-x-eks-main \
-      #     --namespace monitoring --approve \
-      #     --attach-policy-arn "$POLICY_ARN" \
-      #     --override-existing-serviceaccounts
+      # Create role and serviceAccount for Grafana
+      - name: Create role and sa for Grafana
+        run: |
+          eksctl create iamserviceaccount --name grafana-new-sa \
+          --region=us-east-1 --cluster project-x-eks-main \
+          --namespace monitoring --approve \
+          --attach-policy-arn "$POLICY_ARN" \
+          --override-existing-serviceaccounts
 
           
 
@@ -101,32 +101,6 @@ jobs:
              helm upgrade --install grafana-release-dev ./helm-chart/grafana \
              --values ./helm-chart/grafana/values/grafana-val-dev.yaml -n monitoring
 
-            #  helm upgrade --install prometheus-release-dev ./helm-chart/prometheus \
-            #  --values ./helm-chart/prometheus/values/prometheus-val-dev.yaml
-       
-
- 
-         
-      
-  
-      # # Repeat for each additional tool...
-      # # Example: Deploy External DNS
-      
-    
-      # # Example: Setup K8s User Roles
-      # - name: Setup K8s User Roles
-      #   run: |
-      #       echo "Deploy K8s user-roles go here"
-      # # Apply ServiceAccount, ClusterRole and ClusterRoleBindings   
-      # - name:  Apply ServiceAccount
-      #   run: | 
-      #       kubectl apply -f ./k8s-user-roles/service-account.yaml
-      # - name: Apply ClusterRole
-      #   run: |
-      #       kubectl apply -f ./k8s-user-roles/cluster-role.yaml
-      # - name: Apply ClusterRoleBinding
-      #   run: |
-      #       kubectl apply -f ./k8s-user-roles/cluster-role-binding.yaml
     
      
       # - name: Finalize Deployment
