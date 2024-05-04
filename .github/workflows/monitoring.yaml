@@ -39,7 +39,7 @@ jobs:
 
       # Add deployment steps for each tool below.
       - name: Deploy ingress-nginx controller
-        run: kubectl apply -f ingress-nginx/deploy.yaml
+        run: kubectl apply -f ingress-nginx/deploy.yaml --validate=false
        
        # EKS Monitoring
       - name: Deploy EKS Monitoring
