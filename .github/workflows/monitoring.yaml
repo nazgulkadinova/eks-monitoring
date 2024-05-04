@@ -45,13 +45,12 @@ jobs:
       - name: Deploy EKS Monitoring
         run: |
           kubectl get namespace monitoring || kubectl create namespace monitoring     
-          helm upgrade --install prometheus ./eks-monitoring/prometheus \
-          --values ./eks-monitoring/prometheus/values/values-${ENVIRONMENT_STAGE}.yaml \
-          --namespace monitoring
+          helm upgrade --install prometheus-release-dev ./helm-chart/prometheus \
+          --values ./helm-chart/prometheus/values/prometheus-val-dev.yaml
         
-          helm upgrade --install grafana ./eks-monitoring/grafana \
-            --values ./eks-monitoring/grafana/values/values-${ENVIRONMENT_STAGE}.yaml \
-            --namespace monitoring
+          helm upgrade --install grafana-release-dev ./helm-chart/grafana \
+          --values ./helm-chart/grafana/values/grafana-val-dev.yaml -n monitoring
+           
 
 
       # # Example for set up monitoring for Kubernetes cluster
