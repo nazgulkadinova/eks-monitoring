@@ -53,11 +53,11 @@ jobs:
 
           kubectl get namespace monitoring || kubectl create namespace monitoring     
           helm upgrade --install prometheus ./helm-chart/prometheus \
-          --values ./helm-chart/prometheus/values/values-${ENVIRONMENT_STAGE}.yaml \
+          --values ./helm-chart/prometheus/values/values-dev.yaml \
           --namespace monitoring
         
           helm upgrade --install grafana ./helm-chart/grafana \
-            --values ./helm-chart/grafana/values/values-${ENVIRONMENT_STAGE}.yaml \
+            --values ./helm-chart/grafana/values/values-dev.yaml \
             --namespace monitoring
            
 
