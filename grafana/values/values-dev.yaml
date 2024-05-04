@@ -58,7 +58,8 @@
 #   pathType: Prefix
 #   serviceName: grafana
 #   servicePort: 3000
-
+configMap:
+  name: grafana-datasources
 namespace : monitoring
 image : grafana/grafana:latest
 containerPort : 3000
