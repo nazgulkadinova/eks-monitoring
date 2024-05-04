@@ -52,12 +52,12 @@ jobs:
           # --values ./helm-chart/grafana/values-${ENVIRONMENT_STAGE}.yaml --namespace monitoring
 
           kubectl get namespace monitoring || kubectl create namespace monitoring     
-          helm upgrade --install prometheus ./eks-monitoring/prometheus \
-          --values ./eks-monitoring/prometheus/values/values-${ENVIRONMENT_STAGE}.yaml \
+          helm upgrade --install prometheus ./helm-chart/prometheus \
+          --values ./helm-chart/prometheus/values/values-${ENVIRONMENT_STAGE}.yaml \
           --namespace monitoring
         
-          helm upgrade --install grafana ./eks-monitoring/grafana \
-            --values ./eks-monitoring/grafana/values/values-${ENVIRONMENT_STAGE}.yaml \
+          helm upgrade --install grafana ./helm-chart/grafana \
+            --values ./helm-chart/grafana/values/values-${ENVIRONMENT_STAGE}.yaml \
             --namespace monitoring
            
 
