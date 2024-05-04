@@ -64,3 +64,6 @@
 #     - name: prometheus
 #       port: 9090
 #       targetPort: 9090
+
+namespace : monitoring
+type : NodePort
