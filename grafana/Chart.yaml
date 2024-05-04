@@ -1,5 +1,5 @@
 apiVersion: v2
-name: Prometheus Helm Chart
-description: chart for deploying Prometheus
-type: application
+name: grafana
+description: A Helm chart for deploying Grafana
 version: 0.1.0
+appVersion: 7.3.2
