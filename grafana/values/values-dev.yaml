@@ -1,0 +1,7 @@
+namespace : monitoring
+image : grafana/grafana:latest
+containerPort : 3000
+nodePort : 32000
+type : LoadBalancer
+url : http://prometheus-service.monitoring.svc:8080
+host : grafana.nazgul.click

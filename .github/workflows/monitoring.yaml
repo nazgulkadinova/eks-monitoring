@@ -1,0 +1,60 @@
+name: "Workflow - Deploy Monitoring Tools"
+
+on:
+  push:
+    branches:
+      - feature/**
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: "us-east-1"
+  ENVIRONMENT_STAGE: "dev"
+ 
+
+jobs:
+  deploy-platform-tools:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.GitHubActionsCICDrole }}
+          role-session-name: GitHubActionsCICDrole
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Login to EKS, make sure to switch to the permanent cluster created with terraform once it's up
+      - name: Login to EKS - update kubeconfig
+        run: aws eks update-kubeconfig --name project-x-eks-main --region $AWS_REGION
+
+      # Add deployment steps for each tool below.
+      - name: Deploy ingress-nginx controller
+        run: kubectl apply -f ingress-nginx/deploy.yaml 
+       
+       # EKS Monitoring
+      - name: Deploy EKS Monitoring
+        run: |
+      
+
+          kubectl get namespace monitoring || kubectl create namespace monitoring     
+          helm upgrade --install prometheus ./prometheus \
+          --values ./prometheus/values/values-dev.yaml \
+          --namespace monitoring
+        
+          helm upgrade --install grafana ./grafana \
+            --values ./grafana/values/values-dev.yaml \
+            --namespace monitoring
+           
+
+
+      
